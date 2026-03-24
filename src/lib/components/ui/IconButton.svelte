@@ -5,7 +5,14 @@
         icon, 
         tooltip = null, 
         active = false,
-        variant = 'sidebar' // sidebar, header, controls, controls-danger
+        variant = 'sidebar', // sidebar, header, controls, controls-danger
+        onclick = undefined
+    }: {
+        icon: string;
+        tooltip?: string | null;
+        active?: boolean;
+        variant?: 'sidebar' | 'header' | 'controls' | 'controls-danger';
+        onclick?: ((event: MouseEvent) => void) | undefined | null;
     } = $props();
 
     function getClasses() {
@@ -36,7 +43,7 @@
 </script>
 
 <div class={tooltip ? "relative group nav-item" : ""}>
-    <button class={getClasses()}>
+    <button class={getClasses()} {onclick}>
         <span class="material-symbols-outlined {getIconClasses()}">
             {icon}
         </span>

@@ -2,7 +2,11 @@
     let { 
         text, 
         variant = 'primary', // primary, outline
-        onclick = null
+        onclick = undefined
+    }: {
+        text: string;
+        variant?: 'primary' | 'outline';
+        onclick?: ((event: MouseEvent) => void) | undefined | null;
     } = $props();
 
     function getClasses() {

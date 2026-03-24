@@ -8,9 +8,13 @@ I'm researching using Tauri v2 (Gemini recommendation) - For now :)
 # Design inspiration
 Because I like Fred Again's music, I chose the name actual focus.. lol.
 
-### Version 0.0.1
+### Version 0.0.2
 - [x] I'm using Stitch (Google AI Figma) to design the app
 - [x] Decide which stack to use
 - [x] Init Tauri
-- [ ] Create the basic structure of the app
+- [x] Create the basic structure of the app
+- [] Finish the design in Stitch
+- [x] Create the home screen
+- [] Create the basic functionality of the app
+
 
