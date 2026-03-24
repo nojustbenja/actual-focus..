@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    
+    html, body {
+        @apply bg-surface text-on-surface font-body overflow-hidden;
+    }
+}
+
+@layer utilities {
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    .nav-tooltip {
+        position: absolute;
+        left: 100%;
+        margin-left: 12px;
+        padding: 6px 12px;
+        background: #1e201e;
+        color: #b0ceb4;
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 10px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        border-radius: 4px;
+        white-space: nowrap;
+        opacity: 0;
+        pointer-events: none;
+        transition: all 0.2s ease;
+        transform: translateX(-10px);
+        z-index: 50;
+        border: 1px solid rgba(176, 206, 180, 0.1);
+    }
+
+    .nav-item:hover .nav-tooltip {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    
+    .status-glow {
+        box-shadow: 0 0 15px rgba(176, 206, 180, 0.2);
+    }
+
+    .timeline-current-marker-line::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 50%;
+        height: 1px;
+        background: repeating-linear-gradient(90deg, #ff4c4c, #ff4c4c 4px, transparent 4px, transparent 8px);
+        opacity: 0.4;
+        z-index: 1;
+    }
+}
