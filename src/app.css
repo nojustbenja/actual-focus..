@@ -46,15 +46,4 @@
         box-shadow: 0 0 15px rgba(176, 206, 180, 0.2);
     }
 
-    .timeline-current-marker-line::before {
-        content: '';
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: 50%;
-        height: 1px;
-        background: repeating-linear-gradient(90deg, #ff4c4c, #ff4c4c 4px, transparent 4px, transparent 8px);
-        opacity: 0.4;
-        z-index: 1;
-    }
 }

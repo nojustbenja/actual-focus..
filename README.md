@@ -2,19 +2,11 @@
 Hello! This is a new project I want to make purely for altruistic purposes, idk, it's really because I'm tired of seeing so many paywalls to use simple pomodoro timers. I know there are really good apps out there, but I want to make simpler, calmer stuff, and use research out there to improve focus, and OF COURSE OPEN SOURCE
 
 ## Structure stack
-I'm researching using Tauri v2 (Gemini recommendation) - For now :)
-- For the backend, I will think about it later because we will see if we need an API or not.
+
 
 # Design inspiration
 Because I like Fred Again's music, I chose the name actual focus.. lol.
 
-### Version 0.0.2
-- [x] I'm using Stitch (Google AI Figma) to design the app
-- [x] Decide which stack to use
-- [x] Init Tauri
-- [x] Create the basic structure of the app
-- [] Finish the design in Stitch
-- [x] Create the home screen
-- [] Create the basic functionality of the app
+### Version 0.0.3
 
 

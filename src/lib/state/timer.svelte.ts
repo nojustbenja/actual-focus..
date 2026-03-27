@@ -1,3 +1,6 @@
+import { persistSessions, saveData, appData } from './persistence.svelte';
+import { get } from 'svelte/store';
+
 export interface Category {
     name: string;
     icon: string;
@@ -11,8 +14,8 @@ export interface Session {
 }
 
 export function createTimer() {
-    let timeLeft = $state(42 * 60 + 18);
     let totalTime = $state(45 * 60);
+    let timeLeft = $state(45 * 60);
     let status = $state<'idle' | 'running' | 'paused' | 'rest'>('idle');
     let intervalId = $state<number | null>(null);
 
@@ -22,11 +25,15 @@ export function createTimer() {
         { name: 'Creative Sync', icon: 'brush' },
         { name: 'Break', icon: 'coffee' }
     ]);
-    let currentCategory = $state<Category>(categories[0]);
+    let currentCategory = $state<Category | null>(null);
     let sessionTitle = $state('Engineering Focus Protocol...');
-    
     let sessions = $state<Session[]>([]);
     let currentSessionStartTime = $state<Date | null>(null);
+
+    function getCurrentCategory() {
+        if (!currentCategory) return categories[0];
+        return currentCategory;
+    }
 
     function addCategory(name: string, icon: string = 'label') {
         const trimmed = name.trim();
@@ -42,7 +49,7 @@ export function createTimer() {
 
     function removeCategory(name: string) {
         categories = categories.filter(c => c.name !== name);
-        if (currentCategory.name === name && categories.length > 0) {
+        if (getCurrentCategory().name === name && categories.length > 0) {
             currentCategory = categories[0];
         }
     }
@@ -56,11 +63,12 @@ export function createTimer() {
         if (currentSessionStartTime) {
             sessions.push({
                 title: sessionTitle,
-                category: currentCategory.name,
+                category: getCurrentCategory().name,
                 startTime: currentSessionStartTime,
                 endTime: new Date()
             });
             currentSessionStartTime = null;
+            persistSessions();
         }
     }
 
@@ -133,6 +141,20 @@ export function createTimer() {
     function setTotalTime(seconds: number) {
         totalTime = seconds;
         timeLeft = seconds;
+        // Persistir intervalos personalizados
+        const current = get(appData);
+        if (current) {
+            saveData({
+                ...current,
+                intervals: {
+                    ...current.intervals,
+                    work: totalTime,
+                    // TODO: obtener valores reales si se editan
+                    short_break: 5 * 60,
+                    long_break: 15 * 60
+                }
+            });
+        }
     }
 
     return {
@@ -140,7 +162,7 @@ export function createTimer() {
         get totalTime() { return totalTime; },
         get status() { return status; },
         get categories() { return categories; },
-        get currentCategory() { return currentCategory; },
+        get currentCategory() { return getCurrentCategory(); },
         get sessionTitle() { return sessionTitle; },
         set sessionTitle(val) { sessionTitle = val; },
         get sessions() { return sessions; },
@@ -150,9 +172,9 @@ export function createTimer() {
             return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
         },
         get dashOffset() {
-            // Circle circumference is ~1256 (2 * PI * 200)
+            // Circle circumference is ~942 (2 * PI * 150)
             const progress = totalTime > 0 ? (timeLeft / totalTime) : 0;
-            return 1256 * (1 - progress);
+            return 942 * (1 - progress);
         },
         start,
         pause,

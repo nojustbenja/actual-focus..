@@ -10,7 +10,7 @@
     let timeInputMinutes = $state(45);
 </script>
 
-<section class="flex-1 flex flex-col items-center justify-center px-8 pb-12 relative min-h-full overflow-hidden">
+<section class="flex-1 flex flex-col items-center justify-center px-8 pb-24 md:pb-12 relative min-h-full overflow-hidden">
     <div class="absolute inset-0 pointer-events-none opacity-5 flex items-center justify-center">
         <div class="border-[1px] border-primary rounded-full ease-in-out duration-[2000ms] transition-all {globalTimer.status === 'running' ? 'w-[1200px] h-[1200px] animate-pulse-slow' : 'w-[450px] h-[450px]'}"></div>
     </div>
@@ -24,7 +24,7 @@
                 <input 
                     type="text" 
                     bind:value={globalTimer.sessionTitle} 
-                    class="text-2xl md:text-3xl font-headline font-bold text-on-surface uppercase tracking-wider text-center bg-transparent border-none outline-none w-full focus:border-b-2 focus:border-primary/50 transition-all px-2 py-1 placeholder:text-surface-bright"
+                    class="text-2xl md:text-3xl font-headline font-bold text-on-surface uppercase tracking-wider text-center bg-transparent border-none outline-none w-full focus:ring-0 focus:border-b-2 focus:border-primary/50 transition-all px-2 py-1 placeholder:text-surface-bright appearance-none shadow-none"
                     placeholder="Enter Objective..."
                     disabled={globalTimer.status !== 'idle'}
                 />
@@ -40,14 +40,14 @@
                 <span class="text-[12px] font-headline font-bold uppercase tracking-[0.3em] text-primary">{globalTimer.currentCategory.name}</span>
             </button>
 
-            <div class="relative group scale-75 sm:scale-90 md:scale-100">
-                <svg class="w-[420px] h-[420px] transform -rotate-90">
-                    <circle class="text-surface-container" cx="210" cy="210" fill="transparent" r="200" stroke="currentColor" stroke-width="2"></circle>
-                    <circle class="{globalTimer.status === 'rest' ? 'text-[#535bf2]' : 'text-primary'} transition-all duration-1000" cx="210" cy="210" fill="transparent" r="200" stroke="currentColor" stroke-dasharray="1256" stroke-dashoffset={globalTimer.dashOffset} stroke-linecap="round" stroke-width="8"></circle>
+            <div class="relative w-full max-w-[300px] sm:max-w-[340px] md:max-w-[320px]">
+                <svg viewBox="0 0 320 320" class="w-full h-auto transform -rotate-90">
+                    <circle class="text-surface-container" cx="160" cy="160" fill="transparent" r="150" stroke="currentColor" stroke-width="2"></circle>
+                    <circle class="{globalTimer.status === 'rest' ? 'text-[#535bf2]' : 'text-primary'} transition-all duration-1000" cx="160" cy="160" fill="transparent" r="150" stroke="currentColor" stroke-dasharray="942" stroke-dashoffset={globalTimer.dashOffset} stroke-linecap="round" stroke-width="8"></circle>
                 </svg>
                 <div class="absolute inset-0 flex flex-col items-center justify-center z-20">
                     <button 
-                        class="text-8xl md:text-9xl font-headline font-bold tracking-tighter text-on-surface hover:text-primary transition-colors disabled:hover:text-on-surface cursor-pointer disabled:cursor-default"
+                        class="text-5xl sm:text-6xl md:text-7xl font-headline font-bold tracking-tighter text-on-surface hover:text-primary transition-colors disabled:hover:text-on-surface cursor-pointer disabled:cursor-default"
                         onclick={() => {
                             if (globalTimer.status === 'idle') {
                                 timeInputMinutes = Math.floor(globalTimer.totalTime / 60);
@@ -59,7 +59,7 @@
                         {globalTimer.formattedTime}
                     </button>
                 </div>
-                <div class="absolute -inset-12 bg-primary/5 rounded-full blur-3xl opacity-40"></div>
+                <div class="absolute -inset-8 bg-primary/5 rounded-full blur-3xl opacity-40"></div>
             </div>
 
             <div class="flex flex-col items-center gap-8 w-full z-20">

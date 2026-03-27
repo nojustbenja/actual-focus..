@@ -63,7 +63,10 @@
             {/each}
 
             <!-- Current Time Marker -->
-            <div class="flex items-center w-full relative timeline-current-marker-line h-12">
+            <div class="flex items-center w-full relative h-12">
+                <!-- Inline dashed line to prevent Chrome bleeding artifacts -->
+                <div class="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-[1px] opacity-30 z-10" 
+                     style="background: repeating-linear-gradient(90deg, #ff4c4c, #ff4c4c 4px, transparent 4px, transparent 8px);"></div>
                 <div class="absolute left-1/2 -translate-x-1/2 z-20">
                     <div class="bg-[#FF4C4C] px-5 py-2 rounded-full flex items-center gap-2.5 shadow-xl shadow-[#FF4C4C]/40">
                         <span class="w-2 h-2 bg-white rounded-full animate-pulse"></span>

@@ -1,25 +1,33 @@
 <script lang="ts">
     import NavTooltip from "../NavTooltip.svelte";
+    import { page } from "$app/stores";
 
     let { 
         icon, 
         tooltip = null, 
-        active = false,
+        active = undefined,
+        href = undefined,
         variant = 'sidebar', // sidebar, header, controls, controls-danger
         onclick = undefined
     }: {
         icon: string;
         tooltip?: string | null;
         active?: boolean;
+        href?: string;
         variant?: 'sidebar' | 'header' | 'controls' | 'controls-danger';
         onclick?: ((event: MouseEvent) => void) | undefined | null;
     } = $props();
 
+    // If href is provided, derive active state from current page
+    let isActive = $derived(
+        active !== undefined ? active : (href ? $page.url.pathname === href : false)
+    );
+
     function getClasses() {
-        if (variant === 'sidebar' && !active) {
+        if (variant === 'sidebar' && !isActive) {
             return "flex items-center justify-center w-12 h-12 text-moss-dark hover:text-[#b0ceb4] hover:bg-surface-container rounded-full transition-all";
         }
-        if (variant === 'sidebar' && active) {
+        if (variant === 'sidebar' && isActive) {
             return "flex items-center justify-center w-12 h-12 bg-primary/10 text-primary rounded-full transition-all duration-300";
         }
         if (variant === 'header') {
@@ -43,11 +51,19 @@
 </script>
 
 <div class={tooltip ? "relative group nav-item" : ""}>
-    <button class={getClasses()} {onclick}>
-        <span class="material-symbols-outlined {getIconClasses()}">
-            {icon}
-        </span>
-    </button>
+    {#if href}
+        <a class={getClasses()} {href}>
+            <span class="material-symbols-outlined {getIconClasses()}">
+                {icon}
+            </span>
+        </a>
+    {:else}
+        <button class={getClasses()} {onclick}>
+            <span class="material-symbols-outlined {getIconClasses()}">
+                {icon}
+            </span>
+        </button>
+    {/if}
     {#if tooltip}
         <NavTooltip text={tooltip} />
     {/if}
