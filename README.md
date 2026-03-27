@@ -1,12 +1,12 @@
 # Actual Focus.. 🌀
 
-> **The new way of focus and productivity — open source, altruistic, and completely free.**
+> **The new way of focus and productivity — open source, completely free.**
 
 Actual Focus.. is a progressive Pomodoro and productivity application built with **Svelte 5** and **Tauri v2**. It's born from a simple frustration: the abundance of paywalls for basic productivity tools. This project aims to provide a calm, high-performance sanctuary for deep work, leveraging research-backed focus protocols without the bloat.
 
 ## 🌿 Philosophy
 
-- **Altruistic**: Built for the community, not for profit.
+- **Non profit**: Built for the community, not for profit.
 - **Calm by Design**: Inspired by the aesthetics of *Fred Again..*, focusing on minimalism and intentionality.
 - **Open Source**: Everything is transparent and community-driven.
 - **Sovereign**: Your data stays on your machine, always.
@@ -61,7 +61,7 @@ Actual Focus.. is a progressive Pomodoro and productivity application built with
 - [x] Persistent Storage (Tauri + Rust).
 - [x] UI Refinement (Removal of redundant noise).
 - [ ] Session History Visualization (Coming soon).
-- [ ] Advanced Statistics (Coming soon).
+
 
 ---
 
