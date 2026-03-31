@@ -18,6 +18,10 @@ Actual Focus.. is a progressive Pomodoro and productivity application built with
 - **Bio-Technical Sanctuary**: A UI designed to reduce cognitive load while providing essential feedback.
 - **Native Performance**: Built on Tauri v2 for a lightweight, cross-platform desktop experience.
 - **Persistence**: Your settings and session history are saved locally via Rust-powered state management.
+- **Audio Cues**: Sound notifications for start/end/rest transitions.
+- **Native Notifications**: System notifications when timer completes.
+- **Keyboard Shortcuts**: Space (toggle), R (reset), +/- (time), Esc (stop).
+- **Data Export**: Export session history to JSON or CSV.
 
 ## 🛠️ Technical Stack
 
@@ -54,12 +58,17 @@ Actual Focus.. is a progressive Pomodoro and productivity application built with
    pnpm tauri dev
    ```
 
-## 🏗️ Version 0.0.3 (Current)
+## 🏗️ Version 0.0.4 (Current)
 
 - [x] Core Pomodoro Timer Logic.
 - [x] Category Management.
 - [x] Persistent Storage (Tauri + Rust).
 - [x] UI Refinement (Removal of redundant noise).
+- [x] Customizable Intervals (work/short_break/long_break).
+- [x] Audio Cues (start/end/rest).
+- [x] Native Notifications.
+- [x] Keyboard Shortcuts.
+- [x] Data Export (JSON/CSV).
 - [ ] Session History Visualization (Coming soon).
 
 
