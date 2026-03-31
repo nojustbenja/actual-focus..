@@ -3,12 +3,54 @@
     import IconButton from "$lib/components/ui/IconButton.svelte";
     import Modal from "$lib/components/ui/Modal.svelte";
     import { globalTimer } from "$lib/state/timer.svelte";
+    import { onMount } from "svelte";
+    import { exportToJson, exportToCsv, downloadFile } from "$lib/utils/persistence";
 
     let showCategoryModal = $state(false);
     let showTimeModal = $state(false);
+    let showSettingsModal = $state(false);
     let newCategory = $state('');
     let timeInputMinutes = $state(45);
+    
+    let workMinutes = $state(45);
+    let shortBreakMinutes = $state(5);
+    let longBreakMinutes = $state(15);
+
+    function handleKeydown(e: KeyboardEvent) {
+        if (e.target instanceof HTMLInputElement) return;
+        
+        if (e.code === 'Space') {
+            e.preventDefault();
+            globalTimer.toggle();
+        } else if (e.key === 'r' || e.key === 'R') {
+            globalTimer.reset();
+        } else if (e.key === '+' || e.key === '=') {
+            globalTimer.addTime(300);
+        } else if (e.key === '-' || e.key === '_') {
+            globalTimer.subTime(300);
+        } else if (e.key === 'Escape') {
+            globalTimer.stop();
+        }
+    }
+
+    function openSettings() {
+        workMinutes = Math.floor(globalTimer.totalTime / 60);
+        shortBreakMinutes = 5;
+        longBreakMinutes = 15;
+        showSettingsModal = true;
+    }
+
+    function applyIntervals() {
+        globalTimer.setIntervals({
+            work: workMinutes * 60,
+            shortBreak: shortBreakMinutes * 60,
+            longBreak: longBreakMinutes * 60
+        });
+        showSettingsModal = false;
+    }
 </script>
+
+<svelte:window on:keydown={handleKeydown} />
 
 <section class="flex-1 flex flex-col items-center justify-center px-8 pb-24 md:pb-12 relative min-h-full overflow-hidden">
     <div class="absolute inset-0 pointer-events-none opacity-5 flex items-center justify-center">
@@ -76,6 +118,7 @@
                 <div class="flex items-center gap-6">
                     <Button text="-5M" variant="outline" onclick={() => globalTimer.subTime(300)} />
                     <Button text="+5M" variant="outline" onclick={() => globalTimer.addTime(300)} />
+                    <Button text="Settings" variant="outline" onclick={openSettings} />
                 </div>
             </div>
         </div>
@@ -170,5 +213,86 @@
         >
             Apply
         </button>
+    </div>
+</Modal>
+
+<!-- Settings Modal -->
+<Modal bind:show={showSettingsModal}>
+    <h3 class="text-xl font-headline font-bold mb-4 text-on-surface">Pomodoro Intervals</h3>
+    <div class="flex flex-col gap-4 mb-6">
+        <label class="flex flex-col gap-2">
+            <span class="text-xs font-headline uppercase tracking-widest text-outline">Work Duration (min)</span>
+            <input 
+                type="number" 
+                bind:value={workMinutes} 
+                min="1" max="180"
+                class="bg-surface-container rounded-lg border border-outline-variant/20 px-4 py-3 text-lg text-on-surface font-headline font-bold outline-none focus:border-primary/50"
+            />
+        </label>
+        <label class="flex flex-col gap-2">
+            <span class="text-xs font-headline uppercase tracking-widest text-outline">Short Break (min)</span>
+            <input 
+                type="number" 
+                bind:value={shortBreakMinutes} 
+                min="1" max="30"
+                class="bg-surface-container rounded-lg border border-outline-variant/20 px-4 py-3 text-lg text-on-surface font-headline font-bold outline-none focus:border-primary/50"
+            />
+        </label>
+        <label class="flex flex-col gap-2">
+            <span class="text-xs font-headline uppercase tracking-widest text-outline">Long Break (min)</span>
+            <input 
+                type="number" 
+                bind:value={longBreakMinutes} 
+                min="1" max="60"
+                class="bg-surface-container rounded-lg border border-outline-variant/20 px-4 py-3 text-lg text-on-surface font-headline font-bold outline-none focus:border-primary/50"
+            />
+        </label>
+    </div>
+    <div class="flex justify-end gap-3">
+        <button 
+            class="px-6 py-2 rounded-full border border-outline-variant/20 text-xs font-headline font-bold text-outline hover:text-on-surface transition-colors cursor-pointer"
+            onclick={() => showSettingsModal = false}
+        >
+            Cancel
+        </button>
+        <button 
+            class="px-6 py-2 bg-primary text-on-primary rounded-full text-xs font-bold font-headline uppercase tracking-wider hover:bg-primary-fixed transition-colors shadow-lg shadow-primary/10 cursor-pointer"
+            onclick={applyIntervals}
+        >
+            Apply
+        </button>
+    </div>
+    <div class="mt-4 pt-4 border-t border-outline-variant/10">
+        <span class="text-[10px] font-headline uppercase tracking-widest text-outline">Export Data</span>
+        <div class="flex gap-2 mt-2">
+            <button 
+                class="flex-1 px-4 py-2 rounded-lg border border-outline-variant/20 text-xs font-headline font-bold text-outline hover:text-on-surface hover:border-primary/30 transition-colors cursor-pointer"
+                onclick={() => {
+                    const data = globalTimer.sessions.map(s => ({
+                        title: s.title,
+                        category: s.category,
+                        start_time: s.startTime.toISOString(),
+                        end_time: s.endTime.toISOString()
+                    }));
+                    downloadFile(exportToJson(data), 'focus-sessions.json', 'application/json');
+                }}
+            >
+                JSON
+            </button>
+            <button 
+                class="flex-1 px-4 py-2 rounded-lg border border-outline-variant/20 text-xs font-headline font-bold text-outline hover:text-on-surface hover:border-primary/30 transition-colors cursor-pointer"
+                onclick={() => {
+                    const data = globalTimer.sessions.map(s => ({
+                        title: s.title,
+                        category: s.category,
+                        start_time: s.startTime.toISOString(),
+                        end_time: s.endTime.toISOString()
+                    }));
+                    downloadFile(exportToCsv(data), 'focus-sessions.csv', 'text/csv');
+                }}
+            >
+                CSV
+            </button>
+        </div>
     </div>
 </Modal>

@@ -10,8 +10,8 @@ export interface Session {
 
 export interface Intervals {
   work: number;
-  short_break: number;
-  long_break: number;
+  shortBreak: number;
+  longBreak: number;
 }
 
 export interface Settings {
@@ -27,7 +27,7 @@ export interface AppData {
 
 
 export async function loadData(): Promise<AppData> {
-  return await safeInvoke<AppData>('load_data') ?? { sessions: [], intervals: { work: 45 * 60, short_break: 5 * 60, long_break: 15 * 60 }, settings: { sound: true, volume: 0.7 } };
+  return await safeInvoke<AppData>('load_data') ?? { sessions: [], intervals: { work: 45 * 60, shortBreak: 5 * 60, longBreak: 15 * 60 }, settings: { sound: true, volume: 0.7 } };
 }
 
 export async function saveData(data: AppData): Promise<void> {
@@ -36,4 +36,27 @@ export async function saveData(data: AppData): Promise<void> {
 
 export async function resetData(): Promise<void> {
   await safeInvoke('reset_data');
+}
+
+export function exportToJson(sessions: Session[]): string {
+  return JSON.stringify(sessions, null, 2);
+}
+
+export function exportToCsv(sessions: Session[]): string {
+  const headers = 'Title,Category,Start Time,End Time,Duration (min)\n';
+  const rows = sessions.map(s => {
+    const duration = Math.round((new Date(s.end_time).getTime() - new Date(s.start_time).getTime()) / 60000);
+    return `"${s.title}","${s.category}","${s.start_time}","${s.end_time}",${duration}`;
+  }).join('\n');
+  return headers + rows;
+}
+
+export function downloadFile(content: string, filename: string, type: string): void {
+  const blob = new Blob([content], { type });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
 }

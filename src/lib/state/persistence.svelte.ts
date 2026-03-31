@@ -10,7 +10,6 @@ export const appData = writable<AppData | null>(null);
 export async function initializePersistence() {
   const data = await loadData();
   appData.set(data);
-  // Poblar el timer global con sesiones y settings
   if (data.sessions) {
     globalTimer.sessions.splice(0, globalTimer.sessions.length, ...data.sessions.map(s => ({
       ...s,
@@ -18,7 +17,13 @@ export async function initializePersistence() {
       endTime: new Date(s.end_time)
     })));
   }
-  // TODO: Poblar intervalos y settings en globalTimer si es necesario
+  if (data.intervals) {
+    globalTimer.loadIntervals(
+      data.intervals.work,
+      data.intervals.shortBreak,
+      data.intervals.longBreak
+    );
+  }
 }
 
 export async function persistSessions() {

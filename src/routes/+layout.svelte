@@ -6,6 +6,7 @@
     import RightAside from "$lib/components/layout/RightAside.svelte";
     import { onMount } from "svelte";
     import { initializePersistence } from "$lib/state/persistence.svelte";
+    import { requestNotificationPermission } from "$lib/utils/notifications";
 
     const mobileLinks = [
         { href: "/",          icon: "target",               label: "Focus"     },
@@ -13,6 +14,7 @@
 
     onMount(() => {
         initializePersistence();
+        requestNotificationPermission();
     });
 </script>
 

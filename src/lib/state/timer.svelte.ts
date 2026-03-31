@@ -1,5 +1,7 @@
 import { persistSessions, saveData, appData } from './persistence.svelte';
 import { get } from 'svelte/store';
+import { playStartSound, playEndSound, playRestSound } from '../utils/audio';
+import { notifyFocusComplete, notifyRestComplete } from '../utils/notifications';
 
 export interface Category {
     name: string;
@@ -13,7 +15,18 @@ export interface Session {
     endTime: Date;
 }
 
+export interface Intervals {
+    work: number;
+    shortBreak: number;
+    longBreak: number;
+}
+
 export function createTimer() {
+    let intervals = $state<Intervals>({
+        work: 45 * 60,
+        shortBreak: 5 * 60,
+        longBreak: 15 * 60
+    });
     let totalTime = $state(45 * 60);
     let timeLeft = $state(45 * 60);
     let status = $state<'idle' | 'running' | 'paused' | 'rest'>('idle');
@@ -61,6 +74,7 @@ export function createTimer() {
 
     function finishSession() {
         if (currentSessionStartTime) {
+            playEndSound();
             sessions.push({
                 title: sessionTitle,
                 category: getCurrentCategory().name,
@@ -79,17 +93,19 @@ export function createTimer() {
         
         if (status !== 'running') {
             status = 'running';
+            playStartSound();
             intervalId = setInterval(() => {
                 if (timeLeft > 0) {
                     timeLeft--;
                 } else {
-                    // Timer reached 0 sequence
                     finishSession();
                     status = 'rest';
+                    playRestSound();
+                    notifyFocusComplete();
                     if (intervalId) clearInterval(intervalId);
                     intervalId = null;
-                    timeLeft = 5 * 60; // Start with a 5 minute rest
-                    totalTime = 5 * 60;
+                    timeLeft = intervals.shortBreak;
+                    totalTime = intervals.shortBreak;
                 }
             }, 1000) as unknown as number;
         }
@@ -105,10 +121,11 @@ export function createTimer() {
 
     function toggle() {
         if (status === 'rest') {
-            // Dismiss rest state and load default 45m block
             status = 'idle';
-            timeLeft = 45 * 60;
-            totalTime = 45 * 60;
+            playEndSound();
+            notifyRestComplete();
+            timeLeft = intervals.work;
+            totalTime = intervals.work;
             return;
         }
         if (status === 'running') {
@@ -141,19 +158,31 @@ export function createTimer() {
     function setTotalTime(seconds: number) {
         totalTime = seconds;
         timeLeft = seconds;
-        // Persistir intervalos personalizados
         const current = get(appData);
         if (current) {
             saveData({
                 ...current,
-                intervals: {
-                    ...current.intervals,
-                    work: totalTime,
-                    // TODO: obtener valores reales si se editan
-                    short_break: 5 * 60,
-                    long_break: 15 * 60
-                }
+                intervals: { ...intervals, work: seconds }
             });
+        }
+    }
+
+    function setIntervals(newIntervals: Intervals) {
+        intervals = newIntervals;
+        const current = get(appData);
+        if (current) {
+            saveData({
+                ...current,
+                intervals: newIntervals
+            });
+        }
+    }
+
+    function loadIntervals(work: number, shortBreak: number, longBreak: number) {
+        intervals = { work, shortBreak, longBreak };
+        if (status === 'idle') {
+            totalTime = work;
+            timeLeft = work;
         }
     }
 
@@ -161,6 +190,7 @@ export function createTimer() {
         get timeLeft() { return timeLeft; },
         get totalTime() { return totalTime; },
         get status() { return status; },
+        get intervals() { return intervals; },
         get categories() { return categories; },
         get currentCategory() { return getCurrentCategory(); },
         get sessionTitle() { return sessionTitle; },
@@ -184,6 +214,8 @@ export function createTimer() {
         addTime,
         subTime,
         setTotalTime,
+        setIntervals,
+        loadIntervals,
         addCategory,
         removeCategory,
         setCategory

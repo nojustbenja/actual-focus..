@@ -121,11 +121,11 @@
         </div>
     </div>
 
-    <!-- Metabolic State Widget -->
+    <!-- Circadian Rhythm Widget -->
     <div class="mt-auto mb-2">
         <div class="bg-surface-container-high/80 rounded-2xl p-5 border border-outline-variant/10 backdrop-blur-sm">
             <div class="flex justify-between items-center mb-4">
-                <span class="text-[10px] font-headline uppercase font-bold tracking-[0.2em] text-outline">Metabolic State</span>
+                <span class="text-[10px] font-headline uppercase font-bold tracking-[0.2em] text-outline">Circadian Rhythm</span>
                 <span class="text-primary text-[9px] font-headline font-bold uppercase px-3 py-1 rounded-full border border-primary/20 bg-primary/5">
                     {globalTimer.status === 'rest' ? 'Rest' : globalTimer.status === 'running' ? 'Peak' : 'Idle'}
                 </span>
